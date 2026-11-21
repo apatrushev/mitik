@@ -1,0 +1,16 @@
+[package]
+name = "mitik-net"
+description = "Network plumbing for the mitik MikroTik tools: interfaces, raw Ethernet frames, UDP broadcast"
+readme = "README.md"
+categories = ["network-programming"]
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords.workspace = true
+
+[dependencies]
+libc.workspace = true
+nix = { workspace = true, features = ["net", "user"] }
+socket2.workspace = true

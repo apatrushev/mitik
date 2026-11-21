@@ -1,0 +1,33 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+license = "GPL-2.0-or-later"
+repository = "https://github.com/apatrushev/mitik"
+keywords = ["mikrotik", "routeros", "mac-telnet", "mndp", "winbox"]
+
+[workspace.dependencies]
+# Crates of this workspace. Publish them in this order.
+mitik-net = { version = "0.1.0", path = "crates/mitik-net" }
+mitik-mndp = { version = "0.1.0", path = "crates/mitik-mndp" }
+mitik-mactelnet = { version = "0.1.0", path = "crates/mitik-mactelnet" }
+
+clap = { version = "4.6.9", features = ["derive"] }
+libc = "0.2.191"
+md-5 = "0.11.0"
+nix = "0.32.0"
+num-bigint = "0.5.1"
+num-integer = "0.1.47"
+num-traits = "0.2.19"
+rpassword = "7.5.5"
+sha2 = "0.11.1"
+signal-hook = "0.4.6"
+socket2 = { version = "0.6.5", features = ["all"] }
+
+[profile.release]
+lto = true
+strip = true

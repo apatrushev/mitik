@@ -1,0 +1,23 @@
+[package]
+name = "mitik-mactelnet"
+description = "MikroTik MAC-Telnet: protocol, EC-SRP authentication, client, server and MAC-Ping"
+readme = "README.md"
+categories = ["network-programming"]
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords.workspace = true
+
+[dependencies]
+mitik-net.workspace = true
+mitik-mndp.workspace = true
+libc.workspace = true
+md-5.workspace = true
+nix = { workspace = true, features = ["term", "user"] }
+num-bigint.workspace = true
+num-integer.workspace = true
+num-traits.workspace = true
+sha2.workspace = true
+signal-hook.workspace = true

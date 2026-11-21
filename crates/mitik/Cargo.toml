@@ -1,0 +1,27 @@
+[package]
+name = "mitik"
+description = "Tools for MikroTik RouterOS devices: MAC-Telnet client and server, MAC-Ping, MNDP discovery"
+readme = "../../README.md"
+categories = ["command-line-utilities", "network-programming"]
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords.workspace = true
+
+[[bin]]
+name = "mitik"
+path = "src/main.rs"
+
+[dependencies]
+mitik-net.workspace = true
+mitik-mndp.workspace = true
+mitik-mactelnet.workspace = true
+clap.workspace = true
+nix = { workspace = true, features = ["user"] }
+rpassword.workspace = true
+
+[dev-dependencies]
+libc.workspace = true
+md-5.workspace = true
