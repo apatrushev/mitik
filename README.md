@@ -142,30 +142,10 @@ and their API may still change between 0.x releases.
   - noticing interface changes automatically (netlink). The server re-reads interfaces
     only on `SIGHUP`.
 
-## Testing
+## Development
 
-```sh
-cargo test
-```
-
-- **EC-SRP:** the output matches the reference C implementation (`mtwei.c` with OpenSSL)
-  byte for byte, using fixed keys.
-- **Client against a mock server:** a full EC-SRP session and a full MD5 session, over real
-  UDP broadcast.
-- **MAC-Ping against a mock responder:** replies, duplicates, timeouts and exit codes.
-- **Our client against our server:** a real PTY running a real shell. The tests cover:
-  - EC-SRP with a plain-text password and with a hashed one;
-  - MD5;
-  - a wrong password;
-  - an unknown user;
-  - the server's MAC-Ping replies and MNDP announcements.
-- **Names of the C tools:** the same sessions, pings and discovery through `mactelnet`,
-  `macping` and `mactelnetd` symlinks.
-
-Tests that need a network interface are skipped when there is none, or when UDP broadcast
-does not work on it (as on GitHub's macOS runners). Code paths that need
-root are not covered by the tests: raw frames, `-U`, switching to another user, utmp. See
-`TODO.md`.
+Building, testing and releasing are described in
+[DEVELOPMENT.md](https://github.com/apatrushev/mitik/blob/master/DEVELOPMENT.md).
 
 ## License
 
