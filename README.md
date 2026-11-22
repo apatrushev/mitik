@@ -26,6 +26,13 @@ cargo install mitik
 
 It runs on Linux, macOS and the BSDs. Windows is not supported. Building it needs Rust 1.88 or newer.
 
+Ready-made binaries for Linux and macOS (x86_64 and arm64) are attached to each
+[GitHub release](https://github.com/apatrushev/mitik/releases). Linux comes in two builds:
+
+- `*-linux-gnu`: needs glibc 2.35 or newer. Use it for `mitik server`: only this build
+  writes utmp/wtmp login records.
+- `*-linux-musl`: static, runs on any distribution, including Alpine and old systems.
+
 ## Discovering devices
 
 ```sh
