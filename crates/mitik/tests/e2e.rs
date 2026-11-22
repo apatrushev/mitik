@@ -113,12 +113,25 @@ fn server_command(style: Style) -> Command {
     }
 }
 
+/// The network tests need an interface with IPv4 and a MAC, from which a UDP
+/// broadcast can be sent. Some CI machines (GitHub's macOS runners) refuse
+/// broadcasts with "No route to host"; the tests are skipped there.
 fn have_interface() -> bool {
-    let ok = iface::list().map(|l| !l.is_empty()).unwrap_or(false);
-    if !ok {
+    let Some(ip) = iface::list()
+        .ok()
+        .and_then(|l| l.first().and_then(|i| i.ipv4))
+    else {
         eprintln!("skipping: no usable network interface");
+        return false;
+    };
+    // Port 9 is "discard": nobody should mind one empty datagram there.
+    let probe = udp_socket(SocketAddrV4::new(ip, 0), false)
+        .and_then(|s| s.send_to(&[], SocketAddrV4::new(Ipv4Addr::BROADCAST, 9)));
+    if let Err(e) = probe {
+        eprintln!("skipping: UDP broadcast from {ip} does not work here: {e}");
+        return false;
     }
-    ok
+    true
 }
 
 struct Server {
@@ -406,7 +419,9 @@ fn pong_responder(answer: bool, stop: Arc<AtomicBool>) -> thread::JoinHandle<u32
     sock.set_read_timeout(Some(Duration::from_millis(50)))
         .unwrap();
     thread::spawn(move || {
-        let mut pings = 0;
+        // Count distinct pings: without root, `mitik ping` sends each one through
+        // every interface, so a host with several of them delivers copies.
+        let mut pings = std::collections::HashSet::new();
         let mut buf = [0u8; 1500];
         while !stop.load(Ordering::Relaxed) {
             let Ok(n) = sock.recv(&mut buf) else { continue };
@@ -421,7 +436,7 @@ fn pong_responder(answer: bool, stop: Arc<AtomicBool>) -> thread::JoinHandle<u32
                 &[0, 0, 0, 0],
                 "ping header must have zeroed session bytes"
             );
-            pings += 1;
+            pings.insert(buf[protocol::PING_HEADER_LEN..n].to_vec());
             if answer {
                 let src: MacAddr = buf[2..8].try_into().unwrap();
                 let pong = protocol::ping_packet(
@@ -436,7 +451,7 @@ fn pong_responder(answer: bool, stop: Arc<AtomicBool>) -> thread::JoinHandle<u32
                 tx.send_to(&pong, to).unwrap();
             }
         }
-        pings
+        pings.len() as u32
     })
 }
 

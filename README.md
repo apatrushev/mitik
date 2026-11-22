@@ -155,7 +155,8 @@ cargo test
 - **Names of the C tools:** the same sessions, pings and discovery through `mactelnet`,
   `macping` and `mactelnetd` symlinks.
 
-Tests that need a network interface are skipped when there is none. Code paths that need
+Tests that need a network interface are skipped when there is none, or when UDP broadcast
+does not work on it (as on GitHub's macOS runners). Code paths that need
 root are not covered by the tests: raw frames, `-U`, switching to another user, utmp. See
 `TODO.md`.
 
