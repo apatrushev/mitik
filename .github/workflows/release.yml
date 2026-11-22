@@ -68,7 +68,7 @@ jobs:
           mkdir "$name"
           cp "target/${{ matrix.target }}/release/mitik" README.md LICENSE CHANGELOG.md "$name/"
           tar -czf "$name.tar.gz" "$name"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.target }}
           path: mitik-*.tar.gz
@@ -93,7 +93,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true
@@ -107,7 +107,8 @@ jobs:
             $0 ~ "^## \\[" v "\\]" { on = 1; next }
             on && /^## \[/ { exit }
             on && /^\[[^]]*\]: / { exit }
-            on { print }
+            on && !started && /^[[:space:]]*$/ { next }
+            on { started = 1; print }
           ' CHANGELOG.md > notes.md
           cat notes.md
       - name: Create the release
